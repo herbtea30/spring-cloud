@@ -4,6 +4,8 @@ import api.review.msa.component.MessageProducer.WriteReviewSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 @RestController
 public class ReviewController {
@@ -22,7 +24,15 @@ public class ReviewController {
 
         System.out.println("Authorization : "+authorization);
         // set new review
-		writeReviewSource.writeReview().send(MessageBuilder.withPayload("{seq : 13322}").build());
+		//writeReviewSource.writeReview().send(MessageBuilder.withPayload("{seq : 13322}").build());
+
+        WebClient client = WebClient.builder()
+                .baseUrl("http://localhost:8090/api/news")
+                .defaultHeader("Authorization", authorization)
+                .build();
+
+        Mono<String> response = client.get().uri("/review/add?newsId=333").retrieve().bodyToMono(String.class);
+        System.out.println("Response : " + response.block());
 
         return "write review";
     }
