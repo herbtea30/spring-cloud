@@ -1,28 +1,29 @@
 package api.review.msa.controller;
 
 import api.review.msa.component.MessageProducer.WriteReviewSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.support.MessageBuilder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class ReviewController {
 
-    private WriteReviewSource writeReviewSource;
+    @Autowired
+    WriteReviewSource writeReviewSource;
 
-    public ReviewController(WriteReviewSource writeReviewSource) {
-        this.writeReviewSource = writeReviewSource;
-    }
-
-    @GetMapping("/")
+    @RequestMapping("/")
     public String getReview() {
+
         return "review Information";
     }
 
-    @PostMapping("/")
-    public String setReview() {
-        writeReviewSource.writeReview().send(MessageBuilder.withPayload("{seq : 13322}").build());
+    @RequestMapping(value="/", method = RequestMethod.POST)
+    public String setReview(@RequestHeader(value="Authorization") String authorization) {
+
+        System.out.println("Authorization : "+authorization);
+        // set new review
+		writeReviewSource.writeReview().send(MessageBuilder.withPayload("{seq : 13322}").build());
+
         return "write review";
     }
 }
