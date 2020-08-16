@@ -26,6 +26,7 @@ public class ReviewController {
         // set new review
 		//writeReviewSource.writeReview().send(MessageBuilder.withPayload("{seq : 13322}").build());
 
+        //Web flux 
         WebClient client = WebClient.builder()
                 .baseUrl("http://localhost:8090/api/news")
                 .defaultHeader("Authorization", authorization)
